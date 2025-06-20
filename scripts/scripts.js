@@ -1,16 +1,33 @@
-let hours = 0;
-let autoOvertime = false;
-let beyond24 = false;
+import { saveGame, loadGame, clearSave } from './saveLoad.js';
+
+let state = {
+    hours: 0,
+    autoOvertime: false,
+    beyond24: false
+};
 
 const hoursDisplay = document.getElementById("hours");
 const workBtn = document.getElementById("workBtn");
 const autoBtn = document.getElementById("autoOvertimeBtn");
 const beyondBtn = document.getElementById("beyond24Btn");
 
+const saved = loadGame();
+if (saved) {
+    state = saved;
+    if (state.autoOvertime) {
+        startAutoOvertime();
+    }
+    if (state.beyond24) {
+        enableBeyond24();
+    }
+}
+
+
 function updateDisplay() {
-    hoursDisplay.textContent = hours;
-    autoBtn.disabled = autoOvertime || hours < 100;
-    beyondBtn.disabled = beyond24 || hours < 500;
+    hoursDisplay.textContent = state.hours;
+    autoBtn.disabled = state.autoOvertime || hours < 100;
+    beyondBtn.disabled = state.beyond24 || hours < 500;
+    saveGame(state);
 }
 
 workBtn.addEventListener("click", () => {
